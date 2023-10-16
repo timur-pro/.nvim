@@ -63,6 +63,7 @@ if telescope_ok then
 	vim.keymap.set("n", "<leader>sw", telescope.grep_string, { desc = "[S]earch current [W]ord" })
 	vim.keymap.set("n", "<leader>sg", telescope.live_grep, { desc = "[S]earch by [G]rep" })
 	vim.keymap.set("n", "<leader>sd", telescope.diagnostics, { desc = "[S]earch [D]iagnostics" })
+	vim.keymap.set("n", "<leader>gc", telescope.git_commits, { desc = "[G]it [Commits]" })
 end
 
 -- Close current buffer

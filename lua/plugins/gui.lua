@@ -220,5 +220,15 @@ return {
 			})
 		end,
 	},
+	-- Toggle terminal
+	{
+		'akinsho/toggleterm.nvim', 
+		version = "*", 
+		opts = {
+			direction = "horizontal",
+			size = 15,
+			open_mapping = [[<M-j>]]
+		}
+	}	
 }
 
