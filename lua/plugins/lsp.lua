@@ -1,31 +1,79 @@
 return {
+	-- Language Support
+	-- Added this plugin.
 	{
-		'nvim-telescope/telescope.nvim', branch = '0.1.x',
-		dependencies = { 
-			'nvim-lua/plenary.nvim' 
-		},
-		config = function(_, _) 
-			-- Setting telescope mappings
-			local telescope_ok, telescope = pcall(require, 'telescope.builtin')
-			if telescope_ok then
-				vim.keymap.set("n", "<leader>?", telescope.oldfiles, { desc = "[?] Find recently opened files" })
-				vim.keymap.set("n", "<leader><space>", telescope.buffers, { desc = "[ ] Find existing buffers" })
-				vim.keymap.set("n", "<leader>f", function()
-					telescope.current_buffer_fuzzy_find(require("telescope.themes").get_dropdown({
-						winblend = 10,
-						previewer = false,
-					}))
-				end, { desc = "[/] Fuzzily search in current buffer" })
+		'VonHeikemen/lsp-zero.nvim',
+		branch = 'v1.x',
+		dependencies = {
+			-- LSP Support
+			{
+				'neovim/nvim-lspconfig',
+				config = function(_) 
+					local has_telescope, telescope = pcall(require, 'telescope.builtin')
+					vim.keymap.set("n", "<leader>cl", "<cmd>LspInfo<cr>", {desc = "Lsp Info"})
+					if has_telescope then
+						vim.keymap.set("n", "gd", function() telescope.lsp_definitions({reuse_win = true}) end, {desc = "Go to defenition"})
+						vim.keymap.set("n", "gr", function() telescope.lsp_references({reuse_win = true}) end, {desc = "Go to references"})
+						vim.keymap.set("n", "gI", function() telescope.lsp_implementations({reuse_win = true}) end, {desc = "Go to references"})
+						vim.keymap.set("n", "gD", vim.lsp.buf.declaration, {desc = "Go to declaration"})
+						vim.keymap.set("n", "K", vim.lsp.buf.hover, {desc = "Go to declaration"})
+					end
 
-				vim.keymap.set("n", "<leader>p", telescope.find_files, { desc = "[S]earch [F]iles" })
-				vim.keymap.set("n", "<M-p>", telescope.find_files, { desc = "[S]earch [F]iles" })
-				vim.keymap.set("n", "<leader>sh", telescope.help_tags, { desc = "[S]earch [H]elp" })
-				vim.keymap.set("n", "<leader>sw", telescope.grep_string, { desc = "[S]earch current [W]ord" })
-				vim.keymap.set("n", "<leader>sg", telescope.live_grep, { desc = "[S]earch by [G]rep" })
-				vim.keymap.set("n", "<leader>sd", telescope.diagnostics, { desc = "[S]earch [D]iagnostics" })
-				vim.keymap.set("n", "<leader>gc", telescope.git_bcommits, { desc = "[G]it [Commits]" })
-			end
+					require('lspconfig.ui.windows').default_options.border = 'rounded'
+				end
+			}, {'williamboman/mason-lspconfig.nvim'}, -- Optional
+
+			-- Autocompletion
+			{'hrsh7th/nvim-cmp'},         -- Required
+			{'hrsh7th/cmp-nvim-lsp'},     -- Required
+			{'hrsh7th/cmp-buffer'},       -- Optional
+			{'hrsh7th/cmp-path'},         -- Optional
+			{'saadparwaiz1/cmp_luasnip'}, -- Optional
+			{'hrsh7th/cmp-nvim-lua'},     -- Optional
+
+			-- Snippets
+			{'L3MON4D3/LuaSnip'},             -- Required
+			{'rafamadriz/friendly-snippets'}, -- Optional
+		},
+		config = function(_)
+			local lsp = require('lsp-zero')
+			lsp.preset("recommended")
+			lsp.ensure_installed({
+				"tsserver",
+				"gopls",
+				"lua_ls",
+				"eslint",
+				"vimls",
+				"rust_analyzer",
+			})
+
+			require('mason').setup({})
+			require('mason-lspconfig').setup({
+				handlers = {
+					lsp.default_setup,
+				},
+			})
+
+			lsp.setup()
+
+			vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+			vim.lsp.diagnostic.on_publish_diagnostics, {
+				signs = false,
+				virtual_text = true,
+				underline = false,
+			}
+			)
 		end
-	}
+	},
+	{
+		'williamboman/mason.nvim',
+		keys = { { "<leader>cm", "<cmd>Mason<cr>", desc = "Mason" } },
+		build = ":MasonUpdate",
+		opts = {
+			ui = {
+				border = 'rounded',
+			},
+		},
+	},
 }
 

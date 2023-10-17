@@ -21,7 +21,7 @@ vim.opt.timeout = true
 vim.opt.timeoutlen = 300
 vim.opt.completeopt = 'menuone,noselect'
 vim.opt_global.completeopt = { "menuone", "noinsert", "noselect" }
-vim.opt.termguicolors = true
+vim.opt.termguicolors = false
 
 -- Install Lazy plugin manager
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -37,12 +37,20 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-require("lazy").setup({{ import = "plugins" }})
-
--- Setting colorscheme
 if vim.g.colorscheme == nil then
 	vim.g.colorscheme = "default"
 end
+
+require("lazy").setup({{ import = "plugins" }}, {
+	install	= {
+		colorscheme = { vim.g.colorscheme },
+	},
+	ui = {
+		border = "rounded",
+	},
+})
+
+-- Setting colorscheme
 pcall(vim.cmd, "colorscheme " ..  vim.g.colorscheme)
 
 -- Jump to previous position of the file

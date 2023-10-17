@@ -94,12 +94,6 @@ return {
 				right_mouse_command = function(n) require("mini.bufremove").delete(n, false) end,
 				diagnostics = "nvim_lsp",
 				always_show_bufferline = false,
-				diagnostics_indicator = function(_, _, diag)
-					local icons = require("lazyvim.config").icons.diagnostics
-					local ret = (diag.error and icons.Error .. diag.error .. " " or "")
-					.. (diag.warning and icons.Warn .. diag.warning or "")
-					return vim.trim(ret)
-				end,
 				offsets = {
 					{
 						filetype = "neo-tree",
@@ -121,20 +115,6 @@ return {
 				end,
 			})
 		end,
-	},
-	-- Shows key map help
-	{
-		"folke/which-key.nvim",
-		event = "VeryLazy",
-		init = function()
-			vim.o.timeout = true
-			vim.o.timeoutlen = 300
-		end,
-		opts = {
-			-- your configuration comes here
-			-- or leave it empty to use the default settings
-			-- refer to the configuration section below
-		}
 	},
 	-- Active indent guide and indent text objects. When you're browsing
 	-- code, this highlights the current level of indentation, and animates
@@ -176,13 +156,12 @@ return {
 		cmd = "Neotree",
 		keys = {
 			{
-				"<leader>fe",
+				"<leader>e",
 				function()
 					require("neo-tree.command").execute({ toggle = true, dir = vim.loop.cwd() })
 				end,
 				desc = "Explorer NeoTree (cwd)",
 			},
-			{ "<leader>e", "<leader>fe", desc = "Explorer NeoTree (cwd)", remap = true },
 			{
 				"<leader>ge",
 				function()
@@ -262,6 +241,14 @@ return {
 			size = 15,
 			open_mapping = [[<M-j>]]
 		}
-	}	
+	},
+	-- Searching
+	{
+		'nvim-telescope/telescope.nvim', branch = '0.1.x',
+		dependencies = { 
+			'nvim-lua/plenary.nvim' 
+		},
+	}
+
 }
 
