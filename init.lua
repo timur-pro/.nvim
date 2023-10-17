@@ -8,6 +8,8 @@ vim.opt.shiftwidth = 4
 -- Enable line numbers and relative number
 vim.opt.number = true
 vim.opt.relativenumber = true
+-- Cursor line
+vim.opt.cursorline = true
 -- Enable search results highlighting
 vim.opt.hlsearch = true
 -- Enable mouse
